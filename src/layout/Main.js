@@ -7,14 +7,14 @@ import './Main.css';
 class Main extends React.Component {
     state = { movies: [] }
     componentDidMount() {
-        fetch('http://www.omdbapi.com/?apikey=58f24cab&s=Terminator')
+        fetch('https://www.omdbapi.com/?apikey=58f24cab&s=Terminator')
             .then(response => response.json())
             .then(data => this.setState({ movies: data.Search }))
     }
     searchMovie = (str) =>
     {
         this.setState({loading:true})
-        fetch(`http://www.omdbapi.com/?apikey=58f24cab&s=${str.trim()}`)
+        fetch(`https://www.omdbapi.com/?apikey=58f24cab&s=${str.trim()}`)
         .then(response => response.json())
         .then(data => this.setState({movies: data.Search}))
     }
