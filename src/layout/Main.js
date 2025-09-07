@@ -5,26 +5,36 @@ import Search from "../components/Search";
 import './Main.css';
 
 class Main extends React.Component {
-    state = { movies: [] }
+    state = {
+        movies: [],
+        gridView: true
+    }
+
+    layoutViewSw = () => {
+        this.setState(prevState => ({ gridView: !prevState.gridView }));
+    }
+
     componentDidMount() {
         fetch('https://www.omdbapi.com/?apikey=58f24cab&s=Terminator')
             .then(response => response.json())
             .then(data => this.setState({ movies: data.Search }))
     }
-    searchMovie = (str) =>
-    {
-        this.setState({loading:true})
+    searchMovie = (str) => {
+        this.setState({ loading: true })
         fetch(`https://www.omdbapi.com/?apikey=58f24cab&s=${str.trim()}`)
-        .then(response => response.json())
-        .then(data => this.setState({movies: data.Search}))
+            .then(response => response.json())
+            .then(data => this.setState({ movies: data.Search }))
     }
     render() {
         return (
             <div className="main">
                 <div className="wrap">
-                    <Search searchMovie={this.searchMovie}/>
+                    <button onClick={this.layoutViewSw} className="view-toggle">
+                        {this.state.gridView ? 'Спииисок' : 'Плииитка'}
+                    </button>
+                    <Search searchMovie={this.searchMovie} />
                     {
-                        this.state.movies.length ? <MovieList movies={this.state.movies} /> : <Preloader />
+                        this.state.movies.length ? <MovieList movies={this.state.movies} gridView={this.state.gridView}/> : <Preloader />
                     }
                 </div>
             </div>
