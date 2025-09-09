@@ -7,7 +7,9 @@ import './Main.css';
 class Main extends React.Component {
     state = {
         movies: [],
-        gridView: true
+        gridView: true,
+        loading: false,
+        type:"all"
     }
 
     layoutViewSw = () => {
@@ -19,22 +21,33 @@ class Main extends React.Component {
             .then(response => response.json())
             .then(data => this.setState({ movies: data.Search }))
     }
-    searchMovie = (str) => {
+    searchMovie = (str, type='all') => {
         this.setState({ loading: true })
-        fetch(`https://www.omdbapi.com/?apikey=58f24cab&s=${str.trim()}`)
+        fetch(`https://www.omdbapi.com/?apikey=58f24cab&s=${str.trim()}${type !== 'all' ? `&type=${type}` : ''}`)
             .then(response => response.json())
-            .then(data => this.setState({ movies: data.Search }))
+            .then
+            (
+                data => 
+                {
+                    if(data.Response === "True")this.setState({ movies: data.Search, loading:false });
+                    else this.setState({movies:[], loading:false});
+                }
+            )
+            //this.setState({loading:false});
     }
     render() {
         return (
             <div className="main">
                 <div className="wrap">
-                    <button onClick={this.layoutViewSw} className="view-toggle">
+                    <button onClick={this.layoutViewSw}>
                         {this.state.gridView ? 'Спииисок' : 'Плииитка'}
                     </button>
                     <Search searchMovie={this.searchMovie} />
                     {
+                        !this.state.loading && 
                         this.state.movies.length ? <MovieList movies={this.state.movies} gridView={this.state.gridView}/> : <Preloader />
+                        //if(!this.state.loading)
+                        //  this.state.movies.length ? <MovieList movies={this.state.movies} gridView={this.state.gridView}/> : <Preloader />
                     }
                 </div>
             </div>
